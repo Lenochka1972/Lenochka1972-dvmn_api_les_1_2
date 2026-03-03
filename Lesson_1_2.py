@@ -1,13 +1,33 @@
+import json
+
 import requests
 
-access_token = 'aedf791aa05e14b0ba0c38bb0b9def4a'
-url_method = 'https://clc.li/api/url/add'
-headers = {
-           'url': 'https://dvmn.org/modules',
-           'Authorization': 'Bearer access_token'
-           }
+from decouple import config
 
-response = requests.post(url_method, headers=headers)
-response.raise_for_status()
-#print(response.json())
-print(response)
+API_KEY = config('apikey')
+
+url_method = 'https://clc.li/api/url/add'
+
+url_input = input ('Введите ссылку, которую хотите сократить:  ')
+headers = {'Authorization': f'Bearer {API_KEY}'}
+params = {'url' : url_input}
+
+def shorten_link(token, url):
+    response = requests.post(url_method, headers=headers, json=params)
+    response.raise_for_status()
+    shot_link = json.loads(response.text)
+    return shot_link
+
+
+try: 
+    short_link_diсt = shorten_link(API_KEY, url_input)
+    print (short_link_diсt)
+    
+except requests.exceptions.HTTPError:
+    print ('Вы ошиблись')
+    
+    
+
+
+
+
